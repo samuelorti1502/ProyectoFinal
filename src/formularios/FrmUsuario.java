@@ -5,14 +5,18 @@
 package formularios;
 
 import java.awt.Component;
-import java.awt.Container;
-import javax.swing.JComboBox;
-import javax.swing.JComponent;
-import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.text.JTextComponent;
+
+import Clases.ClsConnect;
+import clases.ClsUsuario;
+import java.awt.Image;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
 
 /**
  *
@@ -23,12 +27,35 @@ public class FrmUsuario extends javax.swing.JFrame {
     /**
      * Creates new form FrmUsuario
      */
+    
+    private ImageIcon Img;
+    private Icon icono;
+    private boolean pressed;
+    
+    ClsUsuario user = new ClsUsuario();
+    
     public FrmUsuario() {
         initComponents();
+        this.txtCodigo.setText(generarCodigo());
         this.btnBuscar.setVisible(false);
         this.txtPass2.setVisible(false);
         this.lblPass2.setVisible(false);
+        this.lblVisible2.setVisible(false);
+        
+        Img = new ImageIcon("./src/imagenes/visible.png");
+        icono = new ImageIcon(Img.getImage().getScaledInstance(this.lblVisible2.getWidth(), this.lblVisible2.getHeight(), Image.SCALE_DEFAULT));
+        
+        this.lblVisible2.setIcon(icono);
+        this.lblVisible.setIcon(icono);
+        
 
+    }
+    
+    private String generarCodigo() {
+        Date date = new Date();
+        SimpleDateFormat DateFor = new SimpleDateFormat("yyyyMMddHHmmss");
+
+        return DateFor.format(date);
     }
 
     /**
@@ -55,7 +82,6 @@ public class FrmUsuario extends javax.swing.JFrame {
         txtCodigo = new javax.swing.JTextField();
         txtNombre1 = new javax.swing.JTextField();
         txtApellido1 = new javax.swing.JTextField();
-        txtFechaNac = new javax.swing.JTextField();
         lblNombre2 = new javax.swing.JLabel();
         txtNombre2 = new javax.swing.JTextField();
         lblApellido2 = new javax.swing.JLabel();
@@ -65,6 +91,9 @@ public class FrmUsuario extends javax.swing.JFrame {
         txtPass2 = new javax.swing.JPasswordField();
         txtPass1 = new javax.swing.JPasswordField();
         btnBuscar = new javax.swing.JButton();
+        txtFechaNac = new javax.swing.JFormattedTextField();
+        lblVisible2 = new javax.swing.JLabel();
+        lblVisible = new javax.swing.JLabel();
         pnlBotones = new javax.swing.JPanel();
         btnCrear = new javax.swing.JButton();
         btnCancelar = new javax.swing.JButton();
@@ -155,7 +184,6 @@ public class FrmUsuario extends javax.swing.JFrame {
         pnlDatos2.add(txtCodigo, new org.netbeans.lib.awtextra.AbsoluteConstraints(240, 10, 220, 40));
         pnlDatos2.add(txtNombre1, new org.netbeans.lib.awtextra.AbsoluteConstraints(240, 100, 220, 40));
         pnlDatos2.add(txtApellido1, new org.netbeans.lib.awtextra.AbsoluteConstraints(240, 150, 220, 40));
-        pnlDatos2.add(txtFechaNac, new org.netbeans.lib.awtextra.AbsoluteConstraints(240, 200, 220, 40));
 
         lblNombre2.setFont(new java.awt.Font("Segoe UI Black", 0, 18)); // NOI18N
         lblNombre2.setText("Segundo Nombre");
@@ -189,7 +217,35 @@ public class FrmUsuario extends javax.swing.JFrame {
 
         btnBuscar.setFont(new java.awt.Font("Segoe UI Black", 0, 18)); // NOI18N
         btnBuscar.setText("Buscar");
+        btnBuscar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnBuscarActionPerformed(evt);
+            }
+        });
         pnlDatos2.add(btnBuscar, new org.netbeans.lib.awtextra.AbsoluteConstraints(500, 10, 100, 40));
+
+        try {
+            txtFechaNac.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.MaskFormatter("##/##/####")));
+        } catch (java.text.ParseException ex) {
+            ex.printStackTrace();
+        }
+        pnlDatos2.add(txtFechaNac, new org.netbeans.lib.awtextra.AbsoluteConstraints(240, 200, 220, 40));
+
+        lblVisible2.setText("jLabel1");
+        lblVisible2.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                lblVisible2MousePressed(evt);
+            }
+        });
+        pnlDatos2.add(lblVisible2, new org.netbeans.lib.awtextra.AbsoluteConstraints(960, 300, 40, 40));
+
+        lblVisible.setText("jLabel1");
+        lblVisible.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                lblVisibleMousePressed(evt);
+            }
+        });
+        pnlDatos2.add(lblVisible, new org.netbeans.lib.awtextra.AbsoluteConstraints(960, 250, 40, 40));
 
         javax.swing.GroupLayout pnlDatosLayout = new javax.swing.GroupLayout(pnlDatos);
         pnlDatos.setLayout(pnlDatosLayout);
@@ -199,7 +255,7 @@ public class FrmUsuario extends javax.swing.JFrame {
                 .addContainerGap()
                 .addComponent(lblImgUsuario)
                 .addGap(18, 18, 18)
-                .addComponent(pnlDatos2, javax.swing.GroupLayout.DEFAULT_SIZE, 1004, Short.MAX_VALUE)
+                .addComponent(pnlDatos2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addContainerGap())
         );
         pnlDatosLayout.setVerticalGroup(
@@ -219,6 +275,11 @@ public class FrmUsuario extends javax.swing.JFrame {
 
         btnCrear.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
         btnCrear.setText("Crear");
+        btnCrear.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnCrearActionPerformed(evt);
+            }
+        });
         pnlBotones.add(btnCrear, new org.netbeans.lib.awtextra.AbsoluteConstraints(420, 20, 170, 60));
 
         btnCancelar.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
@@ -228,6 +289,11 @@ public class FrmUsuario extends javax.swing.JFrame {
         menuBuscar.setText("Usuario");
 
         jMenuItem1.setText("Nuevo");
+        jMenuItem1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem1ActionPerformed(evt);
+            }
+        });
         menuBuscar.add(jMenuItem1);
 
         mnBuscar.setText("Buscar");
@@ -290,7 +356,66 @@ public class FrmUsuario extends javax.swing.JFrame {
     private void txtPass1KeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtPass1KeyPressed
         this.txtPass2.setVisible(true);
         this.lblPass2.setVisible(true);
+        this.lblVisible2.setVisible(true);
     }//GEN-LAST:event_txtPass1KeyPressed
+
+    private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
+        
+    }//GEN-LAST:event_jMenuItem1ActionPerformed
+
+    private void btnCrearActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCrearActionPerformed
+       
+        user.nuevoUsuario(this.txtCodigo.getText(), this.txtNombre1.getText(), this.txtNombre2.getText(), this.txtApellido1.getText(), 
+                this.txtApellido2.getText(), this.txtFechaNac.getText(), this.txtUsuario.getText(), String.valueOf(this.txtPass1.getPassword()), 
+                String.valueOf(this.txtPass2.getPassword()));
+    }//GEN-LAST:event_btnCrearActionPerformed
+
+    private void lblVisible2MousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblVisible2MousePressed
+        
+        if(!isPressed()){
+            Img = new ImageIcon("./src/imagenes/no_visible.png");
+            this.txtPass2.setEchoChar((char)0);
+            setPressed(true);
+        }else{
+            Img = new ImageIcon("./src/imagenes/visible.png");
+            this.txtPass2.setEchoChar('*');
+            setPressed(false);
+        }
+        
+        icono = new ImageIcon(Img.getImage().getScaledInstance(this.lblVisible2.getWidth(), this.lblVisible2.getHeight(), Image.SCALE_DEFAULT));
+        
+        this.lblVisible2.setIcon(icono);
+    }//GEN-LAST:event_lblVisible2MousePressed
+
+    private void lblVisibleMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblVisibleMousePressed
+        if(!isPressed()){
+            Img = new ImageIcon("./src/imagenes/no_visible.png");
+            this.txtPass1.setEchoChar((char)0);
+            setPressed(true);
+        }else{
+            Img = new ImageIcon("./src/imagenes/visible.png");
+            this.txtPass1.setEchoChar('*');
+            setPressed(false);
+        }
+        
+        icono = new ImageIcon(Img.getImage().getScaledInstance(this.lblVisible2.getWidth(), this.lblVisible2.getHeight(), Image.SCALE_DEFAULT));
+        
+        this.lblVisible.setIcon(icono);
+    }//GEN-LAST:event_lblVisibleMousePressed
+
+    private void btnBuscarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscarActionPerformed
+        System.out.println("Hola");
+        user.buscarUsuario(this.txtCodigo.getText(), this.txtNombre1, this.txtNombre2, this.txtApellido1, this.txtApellido2, this.txtFechaNac, 
+                this.txtUsuario);
+    }//GEN-LAST:event_btnBuscarActionPerformed
+
+    public boolean isPressed() {
+        return pressed;
+    }
+
+    public void setPressed(boolean pressed) {
+        this.pressed = pressed;
+    }
 
     /**
      * @param args the command line arguments
@@ -356,6 +481,8 @@ public class FrmUsuario extends javax.swing.JFrame {
     private javax.swing.JLabel lblReloj;
     private javax.swing.JLabel lblTitulo;
     private javax.swing.JLabel lblUsuario;
+    private javax.swing.JLabel lblVisible;
+    private javax.swing.JLabel lblVisible2;
     private javax.swing.JMenu menuBuscar;
     private javax.swing.JMenuItem mnBuscar;
     private javax.swing.JPanel pnlBotones;
@@ -365,7 +492,7 @@ public class FrmUsuario extends javax.swing.JFrame {
     private javax.swing.JTextField txtApellido1;
     private javax.swing.JTextField txtApellido2;
     private javax.swing.JTextField txtCodigo;
-    private javax.swing.JTextField txtFechaNac;
+    private javax.swing.JFormattedTextField txtFechaNac;
     private javax.swing.JTextField txtNombre1;
     private javax.swing.JTextField txtNombre2;
     private javax.swing.JPasswordField txtPass1;
