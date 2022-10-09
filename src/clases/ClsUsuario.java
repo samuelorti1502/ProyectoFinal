@@ -14,6 +14,7 @@ import javax.swing.JTextField;
  * @author Samuel
  */
 public class ClsUsuario {
+
     /*private String usuario;
     private String codigo;
     private String nombres;
@@ -22,11 +23,10 @@ public class ClsUsuario {
     private String contraseña2;
     private String fechaNac;*/
     private String query;
-    
+
     /*private ImageIcon Img;
     private Icon icono;
     private JLabel label;*/
-
     public String claveMurci(String texto) {
         texto = texto.replace('m', '0');
         texto = texto.replace('M', '0');
@@ -50,57 +50,121 @@ public class ClsUsuario {
         texto = texto.replace('O', '9');
         return texto;
     }
-    
+
     /*public ClsUsuario(JLabel label){
         this.label = label;
     }*/
-    
     public void nuevoUsuario(String codigo, String nombre1, String nombre2, String apellido1, String apellido2, String fechaNac, String usuario,
-            String pass1, String pass2){
-        
+            String pass1, String pass2) {
+
         //this.codigo = codigo;
         String fechaN = null;
-        
+
         fechaN = "STR_TO_DATE('" + fechaNac + "','%d/%m/%Y')";
-        
-        if(pass1.equals(pass2)){
+
+        if (pass1.equals(pass2)) {
             try {
                 ClsConnect cn = new ClsConnect();
-                
+
                 cn.conexion("ProyectoFinal", "umg", "1234");
-                
-                String query = "INSERT INTO proyectofinal.usuario (codigo, nombre1, nombre2, apellido1, apellido2, fecha_nacimiento, foto, usuario, "
-                            + "contrasenia) VALUES("
-                            + "'" + codigo + "',"
-                            + "'" + nombre1 + "',"
-                            + "'" + nombre2 + "',"
-                            + "'" + apellido1 + "',"
-                            + "'" + apellido2 + "',"
-                            + fechaN + ","
-                            + "'./src/Images/Fotos/" + codigo + ".jpg', "
-                            + "'" + usuario + "',"
-                            + "'" + pass1
-                            + "');";
-                
+
+                if (nombre2.equals("")) {
+                    nombre2 = "NULL,";
+                } else {
+                    nombre2 = "'" + nombre2 + "',";
+                }
+
+                if (apellido2.equals("")) {
+                    apellido2 = "NULL,";
+
+                } else {
+                    apellido2 = "'" + apellido2 + "',";
+                }
+
+                String query = "CALL sp_usuario( "
+                        + "'" + codigo + "',"
+                        + "'" + nombre1 + "',"
+                        + nombre2
+                        + "'" + apellido1 + "',"
+                        + apellido2
+                        + fechaN + ","
+                        + "'./src/Images/Fotos/" + codigo + ".jpg', "
+                        + "'" + usuario + "',"
+                        + "'" + pass1
+                        + "', 1"
+                        + ");";
+
                 System.out.println("query = " + query);
-                cn.insert(query);
+                cn.procedimiento(query);
                 JOptionPane.showMessageDialog(null, "Usuario creado exitosamente");
                 cn.close();
-                
+
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(null, "Usuario no creado error\n, " + e);
+                e.printStackTrace();
+            }
+        }else{
+            JOptionPane.showMessageDialog(null, "Las contraseñas no coinciden");
+        }
+    }
+
+    public void actualizarUsuario(String codigo, String nombre1, String nombre2, String apellido1, String apellido2, String fechaNac, String usuario,
+            String pass1, String pass2) {
+        String fechaN = null;
+
+        fechaN = "STR_TO_DATE('" + fechaNac + "','%d/%m/%Y')";
+
+        if (pass1.equals(pass2)) {
+            try {
+                ClsConnect cn = new ClsConnect();
+
+                cn.conexion("ProyectoFinal", "umg", "1234");
+
+                if (nombre2.equals("")) {
+                    nombre2 = "NULL,";
+                } else {
+                    nombre2 = "'" + nombre2 + "',";
+                }
+
+                if (apellido2.equals("")) {
+                    apellido2 = "NULL,";
+
+                } else {
+                    apellido2 = "'" + apellido2 + "',";
+                }
+
+                String query = "CALL sp_usuario( "
+                        + "'" + codigo + "',"
+                        + "'" + nombre1 + "',"
+                        + nombre2
+                        + "'" + apellido1 + "',"
+                        + apellido2
+                        + fechaN + ","
+                        + "'./src/Images/Fotos/" + codigo + ".jpg', "
+                        + "'" + usuario + "',"
+                        + "'" + pass1
+                        + "', 2"
+                        + ");";
+
+                System.out.println("query = " + query);
+                cn.procedimiento(query);
+                JOptionPane.showMessageDialog(null, "Usuario actualizado exitosamente");
+                cn.close();
+
             } catch (Exception e) {
                 JOptionPane.showMessageDialog(null, "Usuario no creado, " + e);
-                 e.printStackTrace();
+                e.printStackTrace();
             }
         }
     }
-    
+
     public void buscarUsuario(String codigo, JTextField nom1, JTextField nom2, JTextField apellido1, JTextField apellido2,
-            JTextField fechaNac, JTextField usuario){
-        
+            JTextField fechaNac, JTextField usuario) {
+
         try {
             ClsConnect cn = new ClsConnect();
             cn.conexion("proyectofinal", "umg", "1234");
-            
+
             query = "SELECT nombre1, nombre2, apellido1, apellido2, DATE_FORMAT(fecha_nacimiento, '%d%m%Y') fecha_nacimiento, usuario "
                     + "FROM usuario WHERE codigo = '" + codigo + "' LIMIT 1;";
             ResultSet rs = cn.select(query);
@@ -112,15 +176,10 @@ public class ClsUsuario {
                 apellido2.setText(rs.getString("apellido2"));
                 fechaNac.setText(rs.getString("fecha_nacimiento"));
                 usuario.setText(rs.getString("usuario"));
-                
-                System.out.println(rs.getString("fecha_nacimiento"));
-                
             }
         } catch (Exception e) {
             System.out.println("e = " + e);
         }
-        
-        
-        
+
     }
 }

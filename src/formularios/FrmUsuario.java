@@ -364,10 +364,21 @@ public class FrmUsuario extends javax.swing.JFrame {
     }//GEN-LAST:event_jMenuItem1ActionPerformed
 
     private void btnCrearActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCrearActionPerformed
-       
-        user.nuevoUsuario(this.txtCodigo.getText(), this.txtNombre1.getText(), this.txtNombre2.getText(), this.txtApellido1.getText(), 
+        if (this.btnCrear.getText().equals("Crear")) {
+            
+            user.nuevoUsuario(this.txtCodigo.getText(), this.txtNombre1.getText(), this.txtNombre2.getText(), this.txtApellido1.getText(), 
                 this.txtApellido2.getText(), this.txtFechaNac.getText(), this.txtUsuario.getText(), String.valueOf(this.txtPass1.getPassword()), 
                 String.valueOf(this.txtPass2.getPassword()));
+            
+        }else if (this.btnCrear.getText().equals("Actualizar")) {
+            System.out.println("Actualizar");
+            
+            user.actualizarUsuario(this.txtCodigo.getText(), this.txtNombre1.getText(), this.txtNombre2.getText(), this.txtApellido1.getText(), 
+                this.txtApellido2.getText(), this.txtFechaNac.getText(), this.txtUsuario.getText(), String.valueOf(this.txtPass1.getPassword()), 
+                String.valueOf(this.txtPass2.getPassword()));
+        }
+        
+        
     }//GEN-LAST:event_btnCrearActionPerformed
 
     private void lblVisible2MousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblVisible2MousePressed

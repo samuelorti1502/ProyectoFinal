@@ -66,6 +66,17 @@ public class ClsConnect {
         }
     }
     
+    public void procedimiento(String query){
+        ResultSet rs = null;
+        try {
+            st = con.createStatement();
+            rs = st.executeQuery(query);
+        } catch (SQLException ex) {
+            Logger.getLogger(ClsConnect.class.getName()).log(Level.SEVERE, null, ex);
+            JOptionPane.showMessageDialog(null, ex);
+        }
+    }
+    
     public void close(){
         try {
             st.close();
