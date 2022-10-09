@@ -403,32 +403,34 @@ public class FrmUsuario extends javax.swing.JFrame {
                 Logger.getLogger(FrmUsuario.class.getName()).log(Level.SEVERE, null, ex);
             }
 
-            int opc = JOptionPane.showOptionDialog(null, "Desea crear un nuevo usuario?", "Usuario", JOptionPane.YES_NO_CANCEL_OPTION,
-                    JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
+            if (user.isFlag()) {
+                int opc = JOptionPane.showOptionDialog(null, "Desea crear un nuevo usuario?", "Usuario", JOptionPane.YES_NO_CANCEL_OPTION,
+                        JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
 
-            switch (opc) {
-                case 0:
-                    Clear(pnlDatos2);
-                    break;
-                case 1:
-                    opc = JOptionPane.showOptionDialog(null, "Desea asignar perfiles al usuario recien creado?", "Perfiles",
-                            JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
-                    switch (opc) {
-                        case 0:
-                            new FrmPerfil(this.txtCodigo.getText()).setVisible(true);
-                            break;
-                        case 1:
-                            Clear(pnlDatos2);
-                            this.txtCodigo.setText(generarCodigo());
-                            break;
-                        case 2:
-                            this.dispose();
-                            break;
-                    }
-                    break;
-                case 2:
-                    this.dispose();
-                    break;
+                switch (opc) {
+                    case 0:
+                        Clear(pnlDatos2);
+                        break;
+                    case 1:
+                        opc = JOptionPane.showOptionDialog(null, "Desea asignar perfiles al usuario recien creado?", "Perfiles",
+                                JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
+                        switch (opc) {
+                            case 0:
+                                new FrmPerfil(this.txtCodigo.getText()).setVisible(true);
+                                break;
+                            case 1:
+                                Clear(pnlDatos2);
+                                this.txtCodigo.setText(generarCodigo());
+                                break;
+                            case 2:
+                                this.dispose();
+                                break;
+                        }
+                        break;
+                    case 2:
+                        this.dispose();
+                        break;
+                }
             }
 
         } else if (this.btnCrear.getText().equals("Actualizar")) {

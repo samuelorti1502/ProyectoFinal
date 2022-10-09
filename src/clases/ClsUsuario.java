@@ -1,9 +1,5 @@
 package clases;
 
-import javax.swing.Icon;
-import javax.swing.ImageIcon;
-import javax.swing.JLabel;
-
 import Clases.ClsConnect;
 import java.sql.CallableStatement;
 import java.sql.ResultSet;
@@ -18,18 +14,9 @@ import javax.swing.JTextField;
  */
 public class ClsUsuario {
 
-    /*private String usuario;
-    private String codigo;
-    private String nombres;
-    private String apellidos;
-    private String contraseña1;
-    private String contraseña2;
-    private String fechaNac;*/
     private String query;
+    private boolean flag = false;
 
-    /*private ImageIcon Img;
-    private Icon icono;
-    private JLabel label;*/
     public String claveMurci(String texto) {
         texto = texto.replace('m', '0');
         texto = texto.replace('M', '0');
@@ -72,7 +59,7 @@ public class ClsUsuario {
             
             cn.conexion("ProyectoFinal", "umg", "1234");
 
-            CallableStatement cStmt = cn.con.prepareCall("{CALL sp_usuario(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)}");
+            CallableStatement cStmt = cn.con.prepareCall("{CALL sp_usuario(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)}");
             
             cStmt.setString(1, codigo);
             cStmt.setString(2, nombre1);
@@ -93,16 +80,18 @@ public class ClsUsuario {
             cStmt.setString(9, pass1);
             cStmt.setInt(10, 1);
             cStmt.registerOutParameter("msg", Types.VARCHAR);
+            cStmt.registerOutParameter("msg1", Types.INTEGER);
 
             cStmt.execute();
             final ResultSet rs = cStmt.getResultSet();
 
-            /*while (rs.next()) {
-                System.out.println("Cadena de caracteres pasada como parametro de entrada=" + rs.getString("codigo"));
-            }*/
-
             String outputValue = cStmt.getString("msg");
+            int outputValue1 = cStmt.getInt("msg1");
             JOptionPane.showMessageDialog(null, outputValue);
+            
+            if (outputValue1 == 1) {
+                this.setFlag(true);
+            }
 
             //cStmt.close();
             //cn.close();
@@ -207,5 +196,13 @@ public class ClsUsuario {
             System.out.println("e = " + e);
         }
         return fechaRetorno;
+    }
+
+    public boolean isFlag() {
+        return flag;
+    }
+
+    public void setFlag(boolean flag) {
+        this.flag = flag;
     }
 }

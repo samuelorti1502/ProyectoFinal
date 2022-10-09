@@ -35,7 +35,7 @@ public class ClsConnect {
         try {
          con = DriverManager.getConnection(MySQLURL+DB, user, Password);
          if (con != null) {
-            System.out.println("Database connection is successful !!!!");
+            //System.out.println("Database connection is successful !!!!");
          }
       } catch (Exception e) {
          e.printStackTrace();
