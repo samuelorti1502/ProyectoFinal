@@ -5,7 +5,10 @@ import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 
 import Clases.ClsConnect;
+import java.sql.CallableStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Types;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 
@@ -55,56 +58,59 @@ public class ClsUsuario {
         this.label = label;
     }*/
     public void nuevoUsuario(String codigo, String nombre1, String nombre2, String apellido1, String apellido2, String fechaNac, String usuario,
-            String pass1, String pass2) {
+            String pass1, String pass2) throws SQLException {
 
-        //this.codigo = codigo;
         String fechaN = null;
 
-        fechaN = "STR_TO_DATE('" + fechaNac + "','%d/%m/%Y')";
+        fechaN = obgenerFecha(fechaNac);
+        
+        System.out.println("fechaN = " + fechaN);
+        
+        ClsConnect cn = new ClsConnect();
 
-        if (pass1.equals(pass2)) {
-            try {
-                ClsConnect cn = new ClsConnect();
+        try {
+            
+            cn.conexion("ProyectoFinal", "umg", "1234");
 
-                cn.conexion("ProyectoFinal", "umg", "1234");
-
-                if (nombre2.equals("")) {
-                    nombre2 = "NULL,";
-                } else {
-                    nombre2 = "'" + nombre2 + "',";
-                }
-
-                if (apellido2.equals("")) {
-                    apellido2 = "NULL,";
-
-                } else {
-                    apellido2 = "'" + apellido2 + "',";
-                }
-
-                String query = "CALL sp_usuario( "
-                        + "'" + codigo + "',"
-                        + "'" + nombre1 + "',"
-                        + nombre2
-                        + "'" + apellido1 + "',"
-                        + apellido2
-                        + fechaN + ","
-                        + "'./src/Images/Fotos/" + codigo + ".jpg', "
-                        + "'" + usuario + "',"
-                        + "'" + pass1
-                        + "', 1"
-                        + ");";
-
-                System.out.println("query = " + query);
-                cn.procedimiento(query);
-                JOptionPane.showMessageDialog(null, "Usuario creado exitosamente");
-                cn.close();
-
-            } catch (Exception e) {
-                JOptionPane.showMessageDialog(null, "Usuario no creado error\n, " + e);
-                e.printStackTrace();
+            CallableStatement cStmt = cn.con.prepareCall("{CALL sp_usuario(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)}");
+            
+            cStmt.setString(1, codigo);
+            cStmt.setString(2, nombre1);
+            if (nombre2.equals("")) {
+                cStmt.setNull(3, java.sql.Types.VARCHAR);
+            } else {
+                cStmt.setString(3, nombre2);
             }
-        }else{
-            JOptionPane.showMessageDialog(null, "Las contraseñas no coinciden");
+            cStmt.setString(4, apellido1);
+            if (apellido2.equals("")) {
+                cStmt.setNull(5, java.sql.Types.VARCHAR);
+            } else {
+                cStmt.setString(5, apellido2);
+            }
+            cStmt.setString(6, fechaN);
+            cStmt.setString(7, "./src/Images/Fotos/" + codigo + ".jpg ");
+            cStmt.setString(8, usuario);
+            cStmt.setString(9, pass1);
+            cStmt.setInt(10, 1);
+            cStmt.registerOutParameter("msg", Types.VARCHAR);
+
+            cStmt.execute();
+            final ResultSet rs = cStmt.getResultSet();
+
+            /*while (rs.next()) {
+                System.out.println("Cadena de caracteres pasada como parametro de entrada=" + rs.getString("codigo"));
+            }*/
+
+            String outputValue = cStmt.getString("msg");
+            JOptionPane.showMessageDialog(null, outputValue);
+
+            //cStmt.close();
+            //cn.close();
+        } catch (Exception e) {
+            //cn.con.rollback();
+            e.printStackTrace();
+        } finally {
+            cn.con.close();
         }
     }
 
@@ -144,7 +150,8 @@ public class ClsUsuario {
                         + "'" + usuario + "',"
                         + "'" + pass1
                         + "', 2"
-                        + ");";
+                        + ", @msg);"
+                        + "SELECT @msg AS mensaje_error;";
 
                 System.out.println("query = " + query);
                 cn.procedimiento(query);
@@ -181,5 +188,24 @@ public class ClsUsuario {
             System.out.println("e = " + e);
         }
 
+    }
+    
+    public String obgenerFecha(String fecha){
+        
+        String fechaRetorno = null;
+        try {
+            ClsConnect cn = new ClsConnect();
+            cn.conexion("proyectofinal", "umg", "1234");
+
+            query = "SELECT STR_TO_DATE('" + fecha + "','%d/%m/%Y') fecha";
+            ResultSet rs = cn.select(query);
+
+            while (rs.next()) {
+                fechaRetorno = rs.getString("fecha");
+            }
+        } catch (Exception e) {
+            System.out.println("e = " + e);
+        }
+        return fechaRetorno;
     }
 }

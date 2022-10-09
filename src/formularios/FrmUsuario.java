@@ -10,13 +10,17 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.text.JTextComponent;
 
-import Clases.ClsConnect;
+//import Clases.ClsConnect;
 import clases.ClsUsuario;
 import java.awt.Image;
+import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -27,13 +31,12 @@ public class FrmUsuario extends javax.swing.JFrame {
     /**
      * Creates new form FrmUsuario
      */
-    
     private ImageIcon Img;
     private Icon icono;
     private boolean pressed;
-    
+
     ClsUsuario user = new ClsUsuario();
-    
+
     public FrmUsuario() {
         initComponents();
         this.txtCodigo.setText(generarCodigo());
@@ -41,16 +44,15 @@ public class FrmUsuario extends javax.swing.JFrame {
         this.txtPass2.setVisible(false);
         this.lblPass2.setVisible(false);
         this.lblVisible2.setVisible(false);
-        
+
         Img = new ImageIcon("./src/imagenes/visible.png");
         icono = new ImageIcon(Img.getImage().getScaledInstance(this.lblVisible2.getWidth(), this.lblVisible2.getHeight(), Image.SCALE_DEFAULT));
-        
+
         this.lblVisible2.setIcon(icono);
         this.lblVisible.setIcon(icono);
-        
 
     }
-    
+
     private String generarCodigo() {
         Date date = new Date();
         SimpleDateFormat DateFor = new SimpleDateFormat("yyyyMMddHHmmss");
@@ -94,6 +96,7 @@ public class FrmUsuario extends javax.swing.JFrame {
         txtFechaNac = new javax.swing.JFormattedTextField();
         lblVisible2 = new javax.swing.JLabel();
         lblVisible = new javax.swing.JLabel();
+        chkUsuario = new javax.swing.JCheckBox();
         pnlBotones = new javax.swing.JPanel();
         btnCrear = new javax.swing.JButton();
         btnCancelar = new javax.swing.JButton();
@@ -101,6 +104,7 @@ public class FrmUsuario extends javax.swing.JFrame {
         menuBuscar = new javax.swing.JMenu();
         jMenuItem1 = new javax.swing.JMenuItem();
         mnBuscar = new javax.swing.JMenuItem();
+        jMenuItem2 = new javax.swing.JMenuItem();
         jMenu2 = new javax.swing.JMenu();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -183,6 +187,12 @@ public class FrmUsuario extends javax.swing.JFrame {
         txtCodigo.setFocusable(false);
         pnlDatos2.add(txtCodigo, new org.netbeans.lib.awtextra.AbsoluteConstraints(240, 10, 220, 40));
         pnlDatos2.add(txtNombre1, new org.netbeans.lib.awtextra.AbsoluteConstraints(240, 100, 220, 40));
+
+        txtApellido1.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                txtApellido1FocusLost(evt);
+            }
+        });
         pnlDatos2.add(txtApellido1, new org.netbeans.lib.awtextra.AbsoluteConstraints(240, 150, 220, 40));
 
         lblNombre2.setFont(new java.awt.Font("Segoe UI Black", 0, 18)); // NOI18N
@@ -247,6 +257,14 @@ public class FrmUsuario extends javax.swing.JFrame {
         });
         pnlDatos2.add(lblVisible, new org.netbeans.lib.awtextra.AbsoluteConstraints(960, 250, 40, 40));
 
+        chkUsuario.setToolTipText("Marque para sugerir usuario");
+        chkUsuario.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                chkUsuarioActionPerformed(evt);
+            }
+        });
+        pnlDatos2.add(chkUsuario, new org.netbeans.lib.awtextra.AbsoluteConstraints(210, 250, 20, 40));
+
         javax.swing.GroupLayout pnlDatosLayout = new javax.swing.GroupLayout(pnlDatos);
         pnlDatos.setLayout(pnlDatosLayout);
         pnlDatosLayout.setHorizontalGroup(
@@ -304,6 +322,14 @@ public class FrmUsuario extends javax.swing.JFrame {
         });
         menuBuscar.add(mnBuscar);
 
+        jMenuItem2.setText("Asignar Perfiles");
+        jMenuItem2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem2ActionPerformed(evt);
+            }
+        });
+        menuBuscar.add(jMenuItem2);
+
         jMenuBar1.add(menuBuscar);
 
         jMenu2.setText("Edit");
@@ -360,65 +386,115 @@ public class FrmUsuario extends javax.swing.JFrame {
     }//GEN-LAST:event_txtPass1KeyPressed
 
     private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
-        
+
     }//GEN-LAST:event_jMenuItem1ActionPerformed
 
     private void btnCrearActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCrearActionPerformed
+
+        Object[] options = {"Sí", "No", "Cancelar"};
+
         if (this.btnCrear.getText().equals("Crear")) {
-            
-            user.nuevoUsuario(this.txtCodigo.getText(), this.txtNombre1.getText(), this.txtNombre2.getText(), this.txtApellido1.getText(), 
-                this.txtApellido2.getText(), this.txtFechaNac.getText(), this.txtUsuario.getText(), String.valueOf(this.txtPass1.getPassword()), 
-                String.valueOf(this.txtPass2.getPassword()));
-            
-        }else if (this.btnCrear.getText().equals("Actualizar")) {
+
+            try {
+                user.nuevoUsuario(this.txtCodigo.getText(), this.txtNombre1.getText(), this.txtNombre2.getText(), this.txtApellido1.getText(),
+                        this.txtApellido2.getText(), this.txtFechaNac.getText(), this.txtUsuario.getText(), String.valueOf(this.txtPass1.getPassword()),
+                        String.valueOf(this.txtPass2.getPassword()));
+            } catch (SQLException ex) {
+                Logger.getLogger(FrmUsuario.class.getName()).log(Level.SEVERE, null, ex);
+            }
+
+            int opc = JOptionPane.showOptionDialog(null, "Desea crear un nuevo usuario?", "Usuario", JOptionPane.YES_NO_CANCEL_OPTION,
+                    JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
+
+            switch (opc) {
+                case 0:
+                    Clear(pnlDatos2);
+                    break;
+                case 1:
+                    opc = JOptionPane.showOptionDialog(null, "Desea asignar perfiles al usuario recien creado?", "Perfiles",
+                            JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
+                    switch (opc) {
+                        case 0:
+                            new FrmPerfil(this.txtCodigo.getText()).setVisible(true);
+                            break;
+                        case 1:
+                            Clear(pnlDatos2);
+                            this.txtCodigo.setText(generarCodigo());
+                            break;
+                        case 2:
+                            this.dispose();
+                            break;
+                    }
+                    break;
+                case 2:
+                    this.dispose();
+                    break;
+            }
+
+        } else if (this.btnCrear.getText().equals("Actualizar")) {
             System.out.println("Actualizar");
-            
-            user.actualizarUsuario(this.txtCodigo.getText(), this.txtNombre1.getText(), this.txtNombre2.getText(), this.txtApellido1.getText(), 
-                this.txtApellido2.getText(), this.txtFechaNac.getText(), this.txtUsuario.getText(), String.valueOf(this.txtPass1.getPassword()), 
-                String.valueOf(this.txtPass2.getPassword()));
+
+            user.actualizarUsuario(this.txtCodigo.getText(), this.txtNombre1.getText(), this.txtNombre2.getText(), this.txtApellido1.getText(),
+                    this.txtApellido2.getText(), this.txtFechaNac.getText(), this.txtUsuario.getText(), String.valueOf(this.txtPass1.getPassword()),
+                    String.valueOf(this.txtPass2.getPassword()));
         }
-        
-        
     }//GEN-LAST:event_btnCrearActionPerformed
 
     private void lblVisible2MousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblVisible2MousePressed
-        
-        if(!isPressed()){
+
+        if (!isPressed()) {
             Img = new ImageIcon("./src/imagenes/no_visible.png");
-            this.txtPass2.setEchoChar((char)0);
+            this.txtPass2.setEchoChar((char) 0);
             setPressed(true);
-        }else{
+        } else {
             Img = new ImageIcon("./src/imagenes/visible.png");
             this.txtPass2.setEchoChar('*');
             setPressed(false);
         }
-        
+
         icono = new ImageIcon(Img.getImage().getScaledInstance(this.lblVisible2.getWidth(), this.lblVisible2.getHeight(), Image.SCALE_DEFAULT));
-        
+
         this.lblVisible2.setIcon(icono);
     }//GEN-LAST:event_lblVisible2MousePressed
 
     private void lblVisibleMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblVisibleMousePressed
-        if(!isPressed()){
+        if (!isPressed()) {
             Img = new ImageIcon("./src/imagenes/no_visible.png");
-            this.txtPass1.setEchoChar((char)0);
+            this.txtPass1.setEchoChar((char) 0);
             setPressed(true);
-        }else{
+        } else {
             Img = new ImageIcon("./src/imagenes/visible.png");
             this.txtPass1.setEchoChar('*');
             setPressed(false);
         }
-        
+
         icono = new ImageIcon(Img.getImage().getScaledInstance(this.lblVisible2.getWidth(), this.lblVisible2.getHeight(), Image.SCALE_DEFAULT));
-        
+
         this.lblVisible.setIcon(icono);
     }//GEN-LAST:event_lblVisibleMousePressed
 
     private void btnBuscarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscarActionPerformed
         System.out.println("Hola");
-        user.buscarUsuario(this.txtCodigo.getText(), this.txtNombre1, this.txtNombre2, this.txtApellido1, this.txtApellido2, this.txtFechaNac, 
+        user.buscarUsuario(this.txtCodigo.getText(), this.txtNombre1, this.txtNombre2, this.txtApellido1, this.txtApellido2, this.txtFechaNac,
                 this.txtUsuario);
     }//GEN-LAST:event_btnBuscarActionPerformed
+
+    private void jMenuItem2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem2ActionPerformed
+        String usuario = JOptionPane.showInputDialog("Introduzca el usuario");
+
+        new FrmPerfil(usuario).setVisible(true);
+    }//GEN-LAST:event_jMenuItem2ActionPerformed
+
+    private void chkUsuarioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chkUsuarioActionPerformed
+        String usuario = this.txtNombre1.getText().charAt(0) + this.txtApellido1.getText();
+
+        this.txtUsuario.setText(usuario.toLowerCase());
+
+    }//GEN-LAST:event_chkUsuarioActionPerformed
+
+    private void txtApellido1FocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtApellido1FocusLost
+        this.chkUsuario.doClick();
+    }//GEN-LAST:event_txtApellido1FocusLost
 
     public boolean isPressed() {
         return pressed;
@@ -466,7 +542,7 @@ public class FrmUsuario extends javax.swing.JFrame {
     public static void Clear(JPanel intFrame) {
 
         for (Component control : intFrame.getComponents()) {
-            if (control instanceof JTextField  || control instanceof JTextArea) {
+            if (control instanceof JTextField || control instanceof JTextArea) {
                 ((JTextComponent) control).setText(""); //abstract superclass
             }
         }
@@ -476,9 +552,11 @@ public class FrmUsuario extends javax.swing.JFrame {
     private javax.swing.JButton btnBuscar;
     private javax.swing.JButton btnCancelar;
     private javax.swing.JButton btnCrear;
+    private javax.swing.JCheckBox chkUsuario;
     private javax.swing.JMenu jMenu2;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JMenuItem jMenuItem1;
+    private javax.swing.JMenuItem jMenuItem2;
     private javax.swing.JLabel lblApellido1;
     private javax.swing.JLabel lblApellido2;
     private javax.swing.JLabel lblCodigo;
