@@ -5,6 +5,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -18,6 +19,7 @@ public class FrmLogin extends javax.swing.JFrame {
     ClsConnect cn;
 
     private boolean isLogin = false;
+    private String perfil = null;
 
     public FrmLogin() {
         initComponents();
@@ -28,7 +30,7 @@ public class FrmLogin extends javax.swing.JFrame {
             cn = new ClsConnect();
             cn.conexion("proyectofinal", "umg", "1234");
 
-            String query = "SELECT b.perfil FROM usuario_perfil a INNER JOIN perfiles b ON a.id_perfil = b.id INNER JOIN usuario c"
+            String query = "SELECT b.perfil FROM usuario_perfil a INNER JOIN perfil b ON a.id_perfil = b.id INNER JOIN usuario c"
                     + " ON a.id_usuario = c.id WHERE c.usuario = '" + usuario + "';";
 
             ResultSet rs = cn.select(query);
@@ -68,8 +70,8 @@ public class FrmLogin extends javax.swing.JFrame {
         lblNombre3 = new javax.swing.JLabel();
         txtPass = new javax.swing.JPasswordField();
         jPanel2 = new javax.swing.JPanel();
-        jButton1 = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
+        btnCancelar = new javax.swing.JButton();
+        btnIngresar = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -103,16 +105,21 @@ public class FrmLogin extends javax.swing.JFrame {
 
         jPanel2.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        jButton1.setText("Cancelar");
-        jPanel2.add(jButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(200, 10, 130, 40));
-
-        jButton2.setText("Ingresar");
-        jButton2.addActionListener(new java.awt.event.ActionListener() {
+        btnCancelar.setText("Cancelar");
+        btnCancelar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton2ActionPerformed(evt);
+                btnCancelarActionPerformed(evt);
             }
         });
-        jPanel2.add(jButton2, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 10, 130, 40));
+        jPanel2.add(btnCancelar, new org.netbeans.lib.awtextra.AbsoluteConstraints(200, 10, 130, 40));
+
+        btnIngresar.setText("Ingresar");
+        btnIngresar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnIngresarActionPerformed(evt);
+            }
+        });
+        jPanel2.add(btnIngresar, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 10, 130, 40));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -143,10 +150,12 @@ public class FrmLogin extends javax.swing.JFrame {
         llenarCombo(this.txtUsuario.getText());
     }//GEN-LAST:event_txtUsuarioFocusLost
 
-    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+    private void btnIngresarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnIngresarActionPerformed
 
         String user = null;
         String pass = null;
+
+        this.perfil = this.cbPerfil.getSelectedItem().toString();
 
         try {
             cn = new ClsConnect();
@@ -158,27 +167,30 @@ public class FrmLogin extends javax.swing.JFrame {
             ResultSet rs = cn.select(query);
 
             while (rs.next()) {
-                /*nom1.setText(rs.getString("nombre1"));
-                nom2.setText(rs.getString("nombre2"));
-                apellido1.setText(rs.getString("apellido1"));
-                apellido2.setText(rs.getString("apellido2"));
-                fechaNac.setText(rs.getString("fecha_nacimiento"));
-                usuario.setText(rs.getString("usuario"));*/
-
                 user = rs.getString("usuario");
                 pass = rs.getString("contrasenia");
 
                 if (user.equals(this.txtUsuario.getText()) && pass.equals(String.valueOf(this.txtPass.getPassword()))) {
                     setIsLogin(true);
 
-                    new FrmUsuario().setVisible(true);
+                    //new FrmUsuario().setVisible(true);
+                    if (this.perfil.equals("Administrador")) {
+                        new FrmAdmin().setVisible(true);
+                    } else if(this.perfil.equals("Operador recepcion")){
+                        
+                    }
+
                     this.dispose();
 
                 }
             }
         } catch (Exception e) {
         }
-    }//GEN-LAST:event_jButton2ActionPerformed
+    }//GEN-LAST:event_btnIngresarActionPerformed
+
+    private void btnCancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelarActionPerformed
+        this.dispose();
+    }//GEN-LAST:event_btnCancelarActionPerformed
 
     /**
      * @param args the command line arguments
@@ -216,9 +228,9 @@ public class FrmLogin extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnCancelar;
+    private javax.swing.JButton btnIngresar;
     private javax.swing.JComboBox<String> cbPerfil;
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JLabel lblNombre1;

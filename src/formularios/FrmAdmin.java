@@ -13,15 +13,15 @@ import javax.swing.JOptionPane;
  *
  * @author Samuel
  */
-public class FrmMenu extends javax.swing.JFrame {
+public class FrmAdmin extends javax.swing.JFrame {
 
     /**
-     * Creates new form FrmMenu
+     * Creates new form FrmAdmin
      */
     private ImageIcon Img;
     private Icon icono;
     
-    public FrmMenu() {
+    public FrmAdmin() {
         initComponents();
         
         //Img = new ImageIcon("./src/imagenes/add-user.png");
@@ -129,20 +129,21 @@ public class FrmMenu extends javax.swing.JFrame {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(FrmMenu.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(FrmAdmin.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(FrmMenu.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(FrmAdmin.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(FrmMenu.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(FrmAdmin.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(FrmMenu.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(FrmAdmin.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
+        //</editor-fold>
         //</editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new FrmMenu().setVisible(true);
+                new FrmAdmin().setVisible(true);
             }
         });
     }

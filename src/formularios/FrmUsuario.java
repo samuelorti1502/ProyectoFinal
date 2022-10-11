@@ -4,13 +4,8 @@
  */
 package formularios;
 
-import java.awt.Component;
-import javax.swing.JPanel;
-import javax.swing.JTextArea;
-import javax.swing.JTextField;
-import javax.swing.text.JTextComponent;
+import clases.ClsFunciones;
 
-//import Clases.ClsConnect;
 import clases.ClsUsuario;
 import java.awt.Image;
 import java.sql.SQLException;
@@ -36,6 +31,7 @@ public class FrmUsuario extends javax.swing.JFrame {
     private boolean pressed;
 
     ClsUsuario user = new ClsUsuario();
+    ClsFunciones func = new ClsFunciones();
 
     public FrmUsuario() {
         initComponents();
@@ -366,7 +362,7 @@ public class FrmUsuario extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void mnBuscarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnBuscarActionPerformed
-        Clear(pnlDatos2);
+        func.Clear(pnlDatos2);
 
         this.txtCodigo.setEnabled(true);
         this.txtCodigo.setFocusable(true);
@@ -408,28 +404,20 @@ public class FrmUsuario extends javax.swing.JFrame {
                         JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
 
                 switch (opc) {
-                    case 0:
-                        Clear(pnlDatos2);
-                        break;
-                    case 1:
+                    case 0 -> func.Clear(pnlDatos2);
+                    case 1 -> {
                         opc = JOptionPane.showOptionDialog(null, "Desea asignar perfiles al usuario recien creado?", "Perfiles",
                                 JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
                         switch (opc) {
-                            case 0:
-                                new FrmPerfil(this.txtCodigo.getText()).setVisible(true);
-                                break;
-                            case 1:
-                                Clear(pnlDatos2);
+                            case 0 -> new FrmPerfil(this.txtCodigo.getText()).setVisible(true);
+                            case 1 -> {
+                                func.Clear(pnlDatos2);
                                 this.txtCodigo.setText(generarCodigo());
-                                break;
-                            case 2:
-                                this.dispose();
-                                break;
                         }
-                        break;
-                    case 2:
-                        this.dispose();
-                        break;
+                            case 2 -> this.dispose();
+                        }
+                    }
+                    case 2 -> this.dispose();
                 }
             }
 
@@ -539,15 +527,6 @@ public class FrmUsuario extends javax.swing.JFrame {
                 new FrmUsuario().setVisible(true);
             }
         });
-    }
-
-    public static void Clear(JPanel intFrame) {
-
-        for (Component control : intFrame.getComponents()) {
-            if (control instanceof JTextField || control instanceof JTextArea) {
-                ((JTextComponent) control).setText(""); //abstract superclass
-            }
-        }
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
