@@ -1,6 +1,9 @@
 package formularios;
 
 import Clases.ClsConnect;
+import clases.ClsFunciones;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.logging.Level;
@@ -17,6 +20,7 @@ public class FrmLogin extends javax.swing.JFrame {
      * Creates new form FrmLogin
      */
     ClsConnect cn;
+    ClsFunciones fn;
 
     private boolean isLogin = false;
     private String perfil = null;
@@ -152,6 +156,10 @@ public class FrmLogin extends javax.swing.JFrame {
 
     private void btnIngresarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnIngresarActionPerformed
 
+        fn = new ClsFunciones();
+        
+        String sha = fn.sha1("1234");
+        
         String user = null;
         String pass = null;
 
@@ -169,19 +177,24 @@ public class FrmLogin extends javax.swing.JFrame {
             while (rs.next()) {
                 user = rs.getString("usuario");
                 pass = rs.getString("contrasenia");
+                
+                String passw = String.valueOf(this.txtPass.getPassword());
+                System.out.println(fn.sha1(passw));
 
-                if (user.equals(this.txtUsuario.getText()) && pass.equals(String.valueOf(this.txtPass.getPassword()))) {
+                if (user.equals(this.txtUsuario.getText()) && pass.equals(String.valueOf(fn.sha1(passw)))) {
                     setIsLogin(true);
 
                     //new FrmUsuario().setVisible(true);
                     if (this.perfil.equals("Administrador")) {
                         new FrmAdmin().setVisible(true);
-                    } else if(this.perfil.equals("Operador recepcion")){
-                        
+                    } else if (this.perfil.equals("Operador recepcion")) {
+
                     }
 
                     this.dispose();
 
+                }else{
+                    JOptionPane.showMessageDialog(null, "Contraseña o usuario incorrecto, por favor intente de nuevo");
                 }
             }
         } catch (Exception e) {
