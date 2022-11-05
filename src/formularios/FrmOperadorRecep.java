@@ -6,12 +6,16 @@ package formularios;
 
 import Clases.ClsConnect;
 import clases.ClsFunciones;
+import clases.ClsPDF;
 import clases.ClsVisitante;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JComboBox;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 
 /**
@@ -26,13 +30,19 @@ public class FrmOperadorRecep extends javax.swing.JFrame {
     ClsConnect cn;
     ClsVisitante cv = new ClsVisitante();
     ClsFunciones func = new ClsFunciones();
-            
+
     private String query = null;
     private JComboBox cmbPrueba = null;
-
-    public FrmOperadorRecep() {
+    private String usuario;
+    
+    Date date = new Date();
+    SimpleDateFormat DateFor = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    
+    public FrmOperadorRecep(String usuario) {
         initComponents();
 
+        this.usuario = usuario;
+        
         llenarCombo(1, this.cbTipoDoc);
         llenarCombo(2, this.cbNac);
     }
@@ -52,11 +62,11 @@ public class FrmOperadorRecep extends javax.swing.JFrame {
                     item = "documento";
                     break;
                 case 2:
-                    this.setQuery("SELECT * FROM nacionalidad");
-                    item = "nacionalidad";
+                    this.setQuery("SELECT CONCAT(pais, ' (', alpha3, ')') AS pais FROM nacionalidad2");
+                    item = "pais";
                     break;
             }
-            
+
             ResultSet rs = cn.select(query);
             combo.removeAllItems();
 
@@ -96,20 +106,21 @@ public class FrmOperadorRecep extends javax.swing.JFrame {
         txtNoDoc = new javax.swing.JTextField();
         lblNac = new javax.swing.JLabel();
         cbNac = new javax.swing.JComboBox<>();
-        lblCorreo = new javax.swing.JLabel();
         txtCorreo = new javax.swing.JTextField();
         lblTel1 = new javax.swing.JLabel();
         txtTel1 = new javax.swing.JTextField();
-        lblTel2 = new javax.swing.JLabel();
-        txtTel2 = new javax.swing.JTextField();
         lblNoDoc1 = new javax.swing.JLabel();
         txtNoDoc1 = new javax.swing.JTextField();
         btnBuscar = new javax.swing.JButton();
+        lblCorreo1 = new javax.swing.JLabel();
+        btnFotoDoc = new javax.swing.JButton();
         pnlBotones = new javax.swing.JPanel();
         btnCrear = new javax.swing.JButton();
         btnCancelar = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setMaximumSize(new java.awt.Dimension(1188, 675));
+        setResizable(false);
 
         pnlTitulo.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
         pnlTitulo.setPreferredSize(new java.awt.Dimension(1188, 167));
@@ -191,11 +202,6 @@ public class FrmOperadorRecep extends javax.swing.JFrame {
 
         cbNac.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
         pnlDatos2.add(cbNac, new org.netbeans.lib.awtextra.AbsoluteConstraints(260, 260, 220, 40));
-
-        lblCorreo.setFont(new java.awt.Font("Segoe UI Black", 0, 18)); // NOI18N
-        lblCorreo.setText("Correo electronico");
-        lblCorreo.setPreferredSize(new java.awt.Dimension(57, 32));
-        pnlDatos2.add(lblCorreo, new org.netbeans.lib.awtextra.AbsoluteConstraints(510, 260, 220, 40));
         pnlDatos2.add(txtCorreo, new org.netbeans.lib.awtextra.AbsoluteConstraints(750, 260, 220, 40));
 
         lblTel1.setFont(new java.awt.Font("Segoe UI Black", 0, 18)); // NOI18N
@@ -203,12 +209,6 @@ public class FrmOperadorRecep extends javax.swing.JFrame {
         lblTel1.setPreferredSize(new java.awt.Dimension(57, 32));
         pnlDatos2.add(lblTel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 320, 220, 40));
         pnlDatos2.add(txtTel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(260, 320, 220, 40));
-
-        lblTel2.setFont(new java.awt.Font("Segoe UI Black", 0, 18)); // NOI18N
-        lblTel2.setText("Numero telefonico 2");
-        lblTel2.setPreferredSize(new java.awt.Dimension(57, 32));
-        pnlDatos2.add(lblTel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(510, 320, 220, 40));
-        pnlDatos2.add(txtTel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(750, 320, 220, 40));
 
         lblNoDoc1.setFont(new java.awt.Font("Segoe UI Black", 0, 18)); // NOI18N
         lblNoDoc1.setText("No. Documento");
@@ -224,6 +224,20 @@ public class FrmOperadorRecep extends javax.swing.JFrame {
             }
         });
         pnlDatos2.add(btnBuscar, new org.netbeans.lib.awtextra.AbsoluteConstraints(510, 20, 100, 40));
+
+        lblCorreo1.setFont(new java.awt.Font("Segoe UI Black", 0, 18)); // NOI18N
+        lblCorreo1.setText("Correo electronico");
+        lblCorreo1.setPreferredSize(new java.awt.Dimension(57, 32));
+        pnlDatos2.add(lblCorreo1, new org.netbeans.lib.awtextra.AbsoluteConstraints(510, 260, 220, 40));
+
+        btnFotoDoc.setFont(new java.awt.Font("Segoe UI Black", 0, 18)); // NOI18N
+        btnFotoDoc.setText("Foto Documento");
+        btnFotoDoc.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnFotoDocActionPerformed(evt);
+            }
+        });
+        pnlDatos2.add(btnFotoDoc, new org.netbeans.lib.awtextra.AbsoluteConstraints(750, 320, 220, 40));
 
         javax.swing.GroupLayout pnlDatosLayout = new javax.swing.GroupLayout(pnlDatos);
         pnlDatos.setLayout(pnlDatosLayout);
@@ -251,7 +265,7 @@ public class FrmOperadorRecep extends javax.swing.JFrame {
         pnlBotones.setPreferredSize(new java.awt.Dimension(380, 70));
         pnlBotones.setLayout(new java.awt.GridLayout(1, 2, 10, 10));
 
-        btnCrear.setText("Crear");
+        btnCrear.setText("Registrar");
         btnCrear.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnCrearActionPerformed(evt);
@@ -295,35 +309,75 @@ public class FrmOperadorRecep extends javax.swing.JFrame {
         );
 
         pack();
+        setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnCrearActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCrearActionPerformed
-        String nombre1 = this.txtNombre1.getText();
-        String nombre2 = this.txtNombre2.getText(); 
-        String apellido1 = this.txtApellido1.getText(); 
-        String apellido2 = this.txtApellido2.getText(); 
-        String tipoDoc = this.cbTipoDoc.getSelectedItem().toString(); 
-        String noDoc = this.txtNoDoc.getText();
-        String nacionalidad = this.cbNac.getSelectedItem().toString(); 
-        String mail = this.txtCorreo.getText(); 
-        String tel = this.txtTel1.getText(); 
-        String foto = "./src/Images/Fotos/" + noDoc + ".jpg ";
+
+        String seleccion = null;
+        if (this.btnCrear.getText().equals("Registrar")) {
+            //System.out.println("Crear nuevo visitante");
+            String nombre1 = this.txtNombre1.getText();
+            String nombre2 = this.txtNombre2.getText();
+            String apellido1 = this.txtApellido1.getText();
+            String apellido2 = this.txtApellido2.getText();
+            String tipoDoc = this.cbTipoDoc.getSelectedItem().toString();
+            String noDoc = this.txtNoDoc.getText();
+            String nacionalidad = this.cbNac.getSelectedItem().toString();
+            String mail = this.txtCorreo.getText();
+            String tel = this.txtTel1.getText();
+            String foto = "./src/Images/Fotos/" + noDoc + ".jpg ";
+            String fotoA = "./src/Images/Fotos/Documento" + noDoc + "A.jpg ";
+            String fotoR = "./src/Images/Fotos/Documento" + noDoc + "R.jpg ";
+
+            cv.nuevoVisitante(nombre1, nombre2, apellido1, apellido2, tipoDoc, noDoc, nacionalidad, mail, tel, foto, fotoA, fotoR);
+
+            func.Clear(pnlDatos2);
+
+            seleccion = cv.mensajeCombo();
+            System.out.println("seleccion = " + seleccion);
+        } else if (this.btnCrear.getText().equals("Crear Ticket")) {
+            //System.out.println("Crear ticket");
+            seleccion = cv.mensajeCombo();
+            this.txtNombre1.requestFocus();
+        }
+
+        System.out.println("DateFor.format(date) " + DateFor.format(date));
         
-        cv.nuevoVisitante(nombre1, nombre2,  apellido1,  apellido2,  tipoDoc,  noDoc, nacionalidad,  mail,  tel,  foto);
+        func.crearQR(this.txtNoDoc.getText(), " G-" + seleccion, DateFor.format(date));
         
-        func.Clear(pnlDatos2);
+        func.crearCorreo();
+        func.enviarCorreo();
         
-        String seleccion = cv.mensajeCombo();
-        System.out.println("seleccion = " + seleccion);
+        func.insertarTicket(seleccion, this.usuario, 1);
+                
+        ClsPDF clsPDF = new ClsPDF();
+        clsPDF.setDocumento(this.txtNoDoc.getText());
+        clsPDF.setGestion(seleccion);
+        clsPDF.crearPDF();
+        
     }//GEN-LAST:event_btnCrearActionPerformed
-    
+
     private void btnCancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelarActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_btnCancelarActionPerformed
 
     private void btnBuscarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscarActionPerformed
-       
+
+        cv.buscarVisitante(txtNoDoc1.getText(), this.txtNombre1, this.txtNombre2, this.txtApellido1, this.txtApellido2,
+                this.txtNoDoc, this.cbTipoDoc, this.cbNac, this.txtCorreo, this.txtTel1);
+
+        if (!cv.isFlag()) {
+            func.Clear(pnlDatos2);
+            this.btnCrear.setText("Registrar");
+        } else {
+            this.btnCrear.setText("Crear Ticket");
+        }
     }//GEN-LAST:event_btnBuscarActionPerformed
+
+    private void btnFotoDocActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnFotoDocActionPerformed
+        new FrmCamara2(this.txtNoDoc.getText(), new JLabel(), 1).setVisible(true);
+    }//GEN-LAST:event_btnFotoDocActionPerformed
 
     public String getQuery() {
         return query;
@@ -363,7 +417,7 @@ public class FrmOperadorRecep extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new FrmOperadorRecep().setVisible(true);
+                //new FrmOperadorRecep().setVisible(true);
             }
         });
     }
@@ -372,12 +426,13 @@ public class FrmOperadorRecep extends javax.swing.JFrame {
     private javax.swing.JButton btnBuscar;
     private javax.swing.JButton btnCancelar;
     private javax.swing.JButton btnCrear;
+    private javax.swing.JButton btnFotoDoc;
     private javax.swing.JComboBox<String> cbNac;
     private javax.swing.JComboBox<String> cbTipoDoc;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel lblApellido1;
     private javax.swing.JLabel lblApellido2;
-    private javax.swing.JLabel lblCorreo;
+    private javax.swing.JLabel lblCorreo1;
     private javax.swing.JLabel lblEscudo;
     private javax.swing.JLabel lblImgUsuario;
     private javax.swing.JLabel lblNac;
@@ -386,7 +441,6 @@ public class FrmOperadorRecep extends javax.swing.JFrame {
     private javax.swing.JLabel lblNombre1;
     private javax.swing.JLabel lblNombre2;
     private javax.swing.JLabel lblTel1;
-    private javax.swing.JLabel lblTel2;
     private javax.swing.JLabel lblTipoDoc;
     private javax.swing.JPanel pnlBotones;
     private javax.swing.JPanel pnlDatos;
@@ -400,6 +454,5 @@ public class FrmOperadorRecep extends javax.swing.JFrame {
     private javax.swing.JTextField txtNombre1;
     private javax.swing.JTextField txtNombre2;
     private javax.swing.JTextField txtTel1;
-    private javax.swing.JTextField txtTel2;
     // End of variables declaration//GEN-END:variables
 }

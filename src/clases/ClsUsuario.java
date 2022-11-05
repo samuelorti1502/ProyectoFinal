@@ -17,33 +17,6 @@ public class ClsUsuario {
     private String query;
     private boolean flag = false;
 
-    public String claveMurci(String texto) {
-        texto = texto.replace('m', '0');
-        texto = texto.replace('M', '0');
-        texto = texto.replace('u', '1');
-        texto = texto.replace('U', '1');
-        texto = texto.replace('r', '2');
-        texto = texto.replace('R', '2');
-        texto = texto.replace('c', '3');
-        texto = texto.replace('C', '3');
-        texto = texto.replace('i', '4');
-        texto = texto.replace('I', '4');
-        texto = texto.replace('e', '5');
-        texto = texto.replace('E', '5');
-        texto = texto.replace('l', '6');
-        texto = texto.replace('L', '6');
-        texto = texto.replace('a', '7');
-        texto = texto.replace('A', '7');
-        texto = texto.replace('g', '8');
-        texto = texto.replace('G', '8');
-        texto = texto.replace('o', '9');
-        texto = texto.replace('O', '9');
-        return texto;
-    }
-
-    /*public ClsUsuario(JLabel label){
-        this.label = label;
-    }*/
     public void nuevoUsuario(String codigo, String nombre1, String nombre2, String apellido1, String apellido2, String fechaNac, String usuario,
             String pass1, String pass2) throws SQLException {
 

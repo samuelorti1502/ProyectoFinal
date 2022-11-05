@@ -213,6 +213,9 @@
               </Border>
             </Property>
           </Properties>
+          <Events>
+            <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="lblImgUsuarioMouseClicked"/>
+          </Events>
         </Component>
         <Container class="javax.swing.JPanel" name="pnlDatos2">
 

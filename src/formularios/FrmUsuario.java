@@ -13,9 +13,8 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.Icon;
-import javax.swing.ImageIcon;
-import javax.swing.JOptionPane;
+import javax.swing.*;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
 /**
  *
@@ -29,6 +28,7 @@ public class FrmUsuario extends javax.swing.JFrame {
     private ImageIcon Img;
     private Icon icono;
     private boolean pressed;
+    private JButton btnTomar;
 
     ClsUsuario user = new ClsUsuario();
     ClsFunciones func = new ClsFunciones();
@@ -150,6 +150,11 @@ public class FrmUsuario extends javax.swing.JFrame {
         lblImgUsuario.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/pinwi.png"))); // NOI18N
         lblImgUsuario.setToolTipText("");
         lblImgUsuario.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.LOWERED));
+        lblImgUsuario.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                lblImgUsuarioMouseClicked(evt);
+            }
+        });
 
         pnlDatos2.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
@@ -485,6 +490,39 @@ public class FrmUsuario extends javax.swing.JFrame {
     private void txtApellido1FocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtApellido1FocusLost
         this.chkUsuario.doClick();
     }//GEN-LAST:event_txtApellido1FocusLost
+
+    private void lblImgUsuarioMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblImgUsuarioMouseClicked
+        int input = JOptionPane.showConfirmDialog(null, "Desea tomar una foto desde la camara web?");
+
+        //FrmWebCam camara = new FrmWebCam();
+       
+        if (input == 0) {
+            //new FrmCamara(this.txtCodigo.getText(), this.lblImgUsuario).setVisible(true);
+            new FrmCamara2(this.txtCodigo.getText(), this.lblImgUsuario, 2).setVisible(true);
+        } else {
+            int resultado;
+
+            /*FrmImagen buscador = new FrmImagen();
+            FileNameExtensionFilter formato = new FileNameExtensionFilter("Archivos de imagen", "jpg", "png", "gif");
+
+            buscador.jFileChooser1.setFileFilter(formato);
+            resultado = buscador.jFileChooser1.showOpenDialog(null);
+
+            if (JFileChooser.APPROVE_OPTION == resultado) {
+                this.archivo = buscador.jFileChooser1.getSelectedFile();
+
+                try {
+                    ImageIcon Img = new ImageIcon(this.archivo.toString());
+
+                    Icon icono = new ImageIcon(Img.getImage().getScaledInstance(lblImagen.getWidth(), lblImagen.getHeight(),
+                            Image.SCALE_DEFAULT));
+                    lblImagen.setIcon(icono);
+                } catch (Exception ex) {
+                    JOptionPane.showMessageDialog(null, "Error al abrir " + ex);
+                }
+            }*/
+        }
+    }//GEN-LAST:event_lblImgUsuarioMouseClicked
 
     public boolean isPressed() {
         return pressed;

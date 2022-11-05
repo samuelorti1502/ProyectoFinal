@@ -158,8 +158,6 @@ public class FrmLogin extends javax.swing.JFrame {
 
         fn = new ClsFunciones();
         
-        String sha = fn.sha1("1234");
-        
         String user = null;
         String pass = null;
 
@@ -179,7 +177,6 @@ public class FrmLogin extends javax.swing.JFrame {
                 pass = rs.getString("contrasenia");
                 
                 String passw = String.valueOf(this.txtPass.getPassword());
-                System.out.println(fn.sha1(passw));
 
                 if (user.equals(this.txtUsuario.getText()) && pass.equals(String.valueOf(fn.sha1(passw)))) {
                     setIsLogin(true);
@@ -188,7 +185,7 @@ public class FrmLogin extends javax.swing.JFrame {
                     if (this.perfil.equals("Administrador")) {
                         new FrmAdmin().setVisible(true);
                     } else if (this.perfil.equals("Operador recepcion")) {
-
+                        new FrmOperadorRecep(this.txtUsuario.getText()).setVisible(true);
                     }
 
                     this.dispose();
