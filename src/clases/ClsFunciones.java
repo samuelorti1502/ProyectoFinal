@@ -158,7 +158,7 @@ public class ClsFunciones {
             mCorreo.setFrom(new InternetAddress(Usuario));
             mCorreo.setRecipient(Message.RecipientType.TO, new InternetAddress(Para));
             mCorreo.setSubject(Asunto);
-            mCorreo.setText(Mensaje, "ISO-8859-1", "html");
+            //mCorreo.setText(Mensaje, "ISO-8859-1", "html");
             mCorreo.setSentDate(new Date());
 
             body = new StringBuffer("<html>Este mensaje es de prueba.<br>");
@@ -179,8 +179,8 @@ public class ClsFunciones {
     public void enviarCorreo() {
         try {
 
-            /*MimeBodyPart messageBodyPart = new MimeBodyPart();
-            messageBodyPart.setContent(body, "text/html");
+            MimeBodyPart messageBodyPart = new MimeBodyPart();
+            messageBodyPart.setContent(body.toString(), "text/html");
             
             Multipart multipart = new MimeMultipart();
             multipart.addBodyPart(messageBodyPart);
@@ -190,8 +190,21 @@ public class ClsFunciones {
                 
                 for (String contentId : setImageID) {
                     MimeBodyPart imagePart = new MimeBodyPart();
+                    imagePart.setHeader("Content-ID", "<" + contentId + ">");
+                    imagePart.setDisposition(MimeBodyPart.INLINE);
+                    
+                    String imageFilePath = inLineImages.get(contentId);
+                    try {
+                        imagePart.attachFile(imageFilePath);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    
+                    multipart.addBodyPart(imagePart);
                 }
-            }*/
+            }
+            
+            mCorreo.setContent(multipart);
 
             Transport mTransport = mSesion.getTransport("smtp");
             mTransport.connect(Usuario, Contra);
