@@ -5,8 +5,23 @@
 package formularios;
 
 import Clases.ClsConnect;
+import clases.ClsFunciones;
+import clases.ClsFunciones.ImgTabla;
+import clases.ClsPDF;
+import java.awt.Image;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.sql.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.imageio.ImageIO;
+import javax.swing.ImageIcon;
+import javax.swing.JLabel;
+import javax.swing.JTable;
+import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
+import org.jdatepicker.UtilDateModel;
 
 /**
  *
@@ -17,13 +32,21 @@ public class FrmReportes extends javax.swing.JFrame {
     /**
      * Creates new form FrmReportes
      */
-    
     ClsConnect cn = new ClsConnect();
     ResultSet rs = null;
     String query = null;
+    ClsFunciones func = new ClsFunciones();
+    ClsPDF clsPDF;
     
+    DefaultTableModel modelo;
+    Object objeto[];
+
+    String filtro = null;
+    String foto;
+
     public FrmReportes() {
         initComponents();
+
     }
 
     /**
@@ -38,7 +61,7 @@ public class FrmReportes extends javax.swing.JFrame {
         jPanel2 = new javax.swing.JPanel();
         jPanel3 = new javax.swing.JPanel();
         jTabbedPane1 = new javax.swing.JTabbedPane();
-        jPanel4 = new javax.swing.JPanel();
+        pnlUsr = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         txtUsuario = new javax.swing.JTextField();
         jScrollPane1 = new javax.swing.JScrollPane();
@@ -47,8 +70,43 @@ public class FrmReportes extends javax.swing.JFrame {
         txtNombre = new javax.swing.JTextField();
         jLabel5 = new javax.swing.JLabel();
         txtFechaNac = new javax.swing.JTextField();
-        jButton1 = new javax.swing.JButton();
-        jPanel5 = new javax.swing.JPanel();
+        btnBuscarU = new javax.swing.JButton();
+        pnlPerfil = new javax.swing.JPanel();
+        jLabel2 = new javax.swing.JLabel();
+        txtPerfil = new javax.swing.JTextField();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        tblPerfil = new javax.swing.JTable();
+        jButton2 = new javax.swing.JButton();
+        pnlGestion = new javax.swing.JPanel();
+        jLabel3 = new javax.swing.JLabel();
+        txtGestion = new javax.swing.JTextField();
+        jButton3 = new javax.swing.JButton();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        tblGestion = new javax.swing.JTable();
+        pnlVisit = new javax.swing.JPanel();
+        jLabel6 = new javax.swing.JLabel();
+        txtUsuario1 = new javax.swing.JTextField();
+        jLabel7 = new javax.swing.JLabel();
+        txtNombre1 = new javax.swing.JTextField();
+        jLabel8 = new javax.swing.JLabel();
+        txtFechaNac1 = new javax.swing.JTextField();
+        jButton4 = new javax.swing.JButton();
+        jScrollPane4 = new javax.swing.JScrollPane();
+        tblUsuarios1 = new javax.swing.JTable();
+        jLabel9 = new javax.swing.JLabel();
+        txtUsuario2 = new javax.swing.JTextField();
+        jLabel10 = new javax.swing.JLabel();
+        txtNombre2 = new javax.swing.JTextField();
+        txtNombre3 = new javax.swing.JTextField();
+        pnlTicket = new javax.swing.JPanel();
+        jScrollPane5 = new javax.swing.JScrollPane();
+        tblUsuarios2 = new javax.swing.JTable();
+        pnlGeneral = new javax.swing.JPanel();
+        jScrollPane6 = new javax.swing.JScrollPane();
+        tblUsuarios3 = new javax.swing.JTable();
+        jPanel4 = new javax.swing.JPanel();
+        btnGenPDF = new javax.swing.JButton();
+        jButton6 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -60,16 +118,27 @@ public class FrmReportes extends javax.swing.JFrame {
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 179, Short.MAX_VALUE)
+            .addGap(0, 147, Short.MAX_VALUE)
         );
 
-        jPanel4.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+        javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
+        jPanel3.setLayout(jPanel3Layout);
+        jPanel3Layout.setHorizontalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 0, Short.MAX_VALUE)
+        );
+        jPanel3Layout.setVerticalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 0, Short.MAX_VALUE)
+        );
+
+        pnlUsr.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         jLabel1.setText("Usuario");
         jLabel1.setAlignmentY(0.0F);
         jLabel1.setBorder(javax.swing.BorderFactory.createEtchedBorder());
-        jPanel4.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 20, 120, 30));
-        jPanel4.add(txtUsuario, new org.netbeans.lib.awtextra.AbsoluteConstraints(170, 20, 120, 30));
+        pnlUsr.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 20, 120, 30));
+        pnlUsr.add(txtUsuario, new org.netbeans.lib.awtextra.AbsoluteConstraints(170, 20, 120, 30));
 
         tblUsuarios.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -99,59 +168,284 @@ public class FrmReportes extends javax.swing.JFrame {
         });
         jScrollPane1.setViewportView(tblUsuarios);
 
-        jPanel4.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 70, 1110, 340));
+        pnlUsr.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 70, 1130, 300));
 
         jLabel4.setText("Nombre");
         jLabel4.setAlignmentY(0.0F);
         jLabel4.setBorder(javax.swing.BorderFactory.createEtchedBorder());
-        jPanel4.add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(320, 20, 120, 30));
-        jPanel4.add(txtNombre, new org.netbeans.lib.awtextra.AbsoluteConstraints(460, 20, 120, 30));
+        pnlUsr.add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(320, 20, 120, 30));
+        pnlUsr.add(txtNombre, new org.netbeans.lib.awtextra.AbsoluteConstraints(460, 20, 120, 30));
 
         jLabel5.setText("Fecha Nacimiento");
         jLabel5.setAlignmentY(0.0F);
         jLabel5.setBorder(javax.swing.BorderFactory.createEtchedBorder());
-        jPanel4.add(jLabel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(610, 20, 120, 30));
-        jPanel4.add(txtFechaNac, new org.netbeans.lib.awtextra.AbsoluteConstraints(750, 20, 120, 30));
+        pnlUsr.add(jLabel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(610, 20, 120, 30));
+        pnlUsr.add(txtFechaNac, new org.netbeans.lib.awtextra.AbsoluteConstraints(750, 20, 120, 30));
 
-        jButton1.setText("Buscar");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        btnBuscarU.setText("Buscar");
+        btnBuscarU.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                btnBuscarUActionPerformed(evt);
             }
         });
-        jPanel4.add(jButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(900, 20, 120, 30));
+        pnlUsr.add(btnBuscarU, new org.netbeans.lib.awtextra.AbsoluteConstraints(900, 20, 120, 30));
 
-        jTabbedPane1.addTab("Usuarios", jPanel4);
+        jTabbedPane1.addTab("Usuarios", pnlUsr);
 
-        javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
-        jPanel5.setLayout(jPanel5Layout);
-        jPanel5Layout.setHorizontalGroup(
-            jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 1152, Short.MAX_VALUE)
-        );
-        jPanel5Layout.setVerticalGroup(
-            jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 423, Short.MAX_VALUE)
-        );
+        pnlPerfil.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        jTabbedPane1.addTab("Perfiles", jPanel5);
+        jLabel2.setText("Nombre");
+        jLabel2.setAlignmentY(0.0F);
+        jLabel2.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        pnlPerfil.add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 20, 120, 30));
+        pnlPerfil.add(txtPerfil, new org.netbeans.lib.awtextra.AbsoluteConstraints(170, 20, 120, 30));
 
-        javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
-        jPanel3.setLayout(jPanel3Layout);
-        jPanel3Layout.setHorizontalGroup(
-            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel3Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jTabbedPane1)
-                .addContainerGap())
-        );
-        jPanel3Layout.setVerticalGroup(
-            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel3Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jTabbedPane1)
-                .addContainerGap())
-        );
+        tblPerfil.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
+            },
+            new String [] {
+                "Codigo", "Usuario", "Fecha Nacimiento", "Foto"
+            }
+        ) {
+            Class[] types = new Class [] {
+                java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.Object.class
+            };
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false
+            };
+
+            public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
+            }
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        jScrollPane2.setViewportView(tblPerfil);
+
+        pnlPerfil.add(jScrollPane2, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 70, 1130, 300));
+
+        jButton2.setText("Buscar");
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
+        pnlPerfil.add(jButton2, new org.netbeans.lib.awtextra.AbsoluteConstraints(310, 20, 120, 30));
+
+        jTabbedPane1.addTab("Perfiles", pnlPerfil);
+
+        pnlGestion.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+
+        jLabel3.setText("Nombre");
+        jLabel3.setAlignmentY(0.0F);
+        jLabel3.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        pnlGestion.add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 20, 120, 30));
+        pnlGestion.add(txtGestion, new org.netbeans.lib.awtextra.AbsoluteConstraints(170, 20, 120, 30));
+
+        jButton3.setText("Buscar");
+        jButton3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton3ActionPerformed(evt);
+            }
+        });
+        pnlGestion.add(jButton3, new org.netbeans.lib.awtextra.AbsoluteConstraints(310, 20, 120, 30));
+
+        tblGestion.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
+            },
+            new String [] {
+                "Codigo", "Usuario", "Fecha Nacimiento", "Foto"
+            }
+        ) {
+            Class[] types = new Class [] {
+                java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.Object.class
+            };
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false
+            };
+
+            public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
+            }
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        jScrollPane3.setViewportView(tblGestion);
+
+        pnlGestion.add(jScrollPane3, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 70, 1130, 300));
+
+        jTabbedPane1.addTab("Gestiones", pnlGestion);
+
+        pnlVisit.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+
+        jLabel6.setText("Tipo Documento");
+        jLabel6.setAlignmentY(0.0F);
+        jLabel6.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        pnlVisit.add(jLabel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 20, 120, 30));
+        pnlVisit.add(txtUsuario1, new org.netbeans.lib.awtextra.AbsoluteConstraints(170, 20, 120, 30));
+
+        jLabel7.setText("No. Documento");
+        jLabel7.setAlignmentY(0.0F);
+        jLabel7.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        pnlVisit.add(jLabel7, new org.netbeans.lib.awtextra.AbsoluteConstraints(320, 20, 120, 30));
+        pnlVisit.add(txtNombre1, new org.netbeans.lib.awtextra.AbsoluteConstraints(460, 20, 120, 30));
+
+        jLabel8.setText("Nombre");
+        jLabel8.setAlignmentY(0.0F);
+        jLabel8.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        pnlVisit.add(jLabel8, new org.netbeans.lib.awtextra.AbsoluteConstraints(610, 20, 120, 30));
+        pnlVisit.add(txtFechaNac1, new org.netbeans.lib.awtextra.AbsoluteConstraints(750, 20, 120, 30));
+
+        jButton4.setText("Buscar");
+        jButton4.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton4ActionPerformed(evt);
+            }
+        });
+        pnlVisit.add(jButton4, new org.netbeans.lib.awtextra.AbsoluteConstraints(900, 20, 120, 30));
+
+        tblUsuarios1.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
+            },
+            new String [] {
+                "Codigo", "Usuario", "Fecha Nacimiento", "Foto"
+            }
+        ) {
+            Class[] types = new Class [] {
+                java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.Object.class
+            };
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false
+            };
+
+            public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
+            }
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        jScrollPane4.setViewportView(tblUsuarios1);
+
+        pnlVisit.add(jScrollPane4, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 120, 1130, 250));
+
+        jLabel9.setText("Fecha Nacimiento");
+        jLabel9.setAlignmentY(0.0F);
+        jLabel9.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        pnlVisit.add(jLabel9, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 70, 120, 30));
+        pnlVisit.add(txtUsuario2, new org.netbeans.lib.awtextra.AbsoluteConstraints(170, 70, 120, 30));
+
+        jLabel10.setText("Fecha de visita");
+        jLabel10.setAlignmentY(0.0F);
+        jLabel10.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        pnlVisit.add(jLabel10, new org.netbeans.lib.awtextra.AbsoluteConstraints(320, 70, 120, 30));
+        pnlVisit.add(txtNombre2, new org.netbeans.lib.awtextra.AbsoluteConstraints(610, 70, 120, 30));
+        pnlVisit.add(txtNombre3, new org.netbeans.lib.awtextra.AbsoluteConstraints(460, 70, 120, 30));
+
+        jTabbedPane1.addTab("Visitantes", pnlVisit);
+
+        pnlTicket.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+
+        tblUsuarios2.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
+            },
+            new String [] {
+                "Codigo", "Usuario", "Fecha Nacimiento", "Foto"
+            }
+        ) {
+            Class[] types = new Class [] {
+                java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.Object.class
+            };
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false
+            };
+
+            public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
+            }
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        jScrollPane5.setViewportView(tblUsuarios2);
+
+        pnlTicket.add(jScrollPane5, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 120, 1130, 250));
+
+        jTabbedPane1.addTab("Tickets", pnlTicket);
+
+        pnlGeneral.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+
+        tblUsuarios3.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
+            },
+            new String [] {
+                "Codigo", "Usuario", "Fecha Nacimiento", "Foto"
+            }
+        ) {
+            Class[] types = new Class [] {
+                java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.Object.class
+            };
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false
+            };
+
+            public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
+            }
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        jScrollPane6.setViewportView(tblUsuarios3);
+
+        pnlGeneral.add(jScrollPane6, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 120, 1130, 250));
+
+        jTabbedPane1.addTab("General", pnlGeneral);
+
+        jPanel4.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+
+        btnGenPDF.setText("Generar PDF");
+        btnGenPDF.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnGenPDFActionPerformed(evt);
+            }
+        });
+        jPanel4.add(btnGenPDF, new org.netbeans.lib.awtextra.AbsoluteConstraints(400, 30, 120, 30));
+
+        jButton6.setText("Buscar");
+        jButton6.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton6ActionPerformed(evt);
+            }
+        });
+        jPanel4.add(jButton6, new org.netbeans.lib.awtextra.AbsoluteConstraints(620, 30, 120, 30));
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -159,9 +453,12 @@ public class FrmReportes extends javax.swing.JFrame {
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jTabbedPane1)
+                    .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(24, 24, 24)
+                .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
@@ -169,8 +466,16 @@ public class FrmReportes extends javax.swing.JFrame {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(44, 44, 44)
+                        .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(18, 18, 18)
+                        .addComponent(jTabbedPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 413, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addContainerGap())))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -193,58 +498,202 @@ public class FrmReportes extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        
-        
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         try {
             cn.conexion("proyectofinal", "umg", "1234");
-            
+
+            tblPerfil.setDefaultRenderer(Object.class, new ClsFunciones().new ImgTabla());
+            modelo = new DefaultTableModel();
+            tblPerfil.setModel(modelo);
+
+            filtro = (this.txtPerfil.getText().equals("")) ? ";" : " WHERE perfil = '" + this.txtPerfil.getText() + "' AND estatus = 1;";
+
+            query = "SELECT perfil, descripcion "
+                    + "FROM proyectofinal.perfil" + filtro;
+
+            System.out.println("query = " + query);
+
+            rs = cn.select(query);
+
+            ResultSetMetaData rsMd = rs.getMetaData();
+            int cantidadCol = rsMd.getColumnCount();
+
+            modelo.addColumn("Perfil");
+            modelo.addColumn("Descripcion");
+
+            objeto = new Object[cantidadCol];
+
+            while (rs.next()) {
+                objeto[0] = rs.getString("perfil");
+                objeto[1] = rs.getString("descripcion");
+                modelo.addRow(objeto);
+            }
+
+        } catch (SQLException ex) {
+            Logger.getLogger(FrmReportes.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_jButton2ActionPerformed
+
+    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+        try {
+            cn.conexion("proyectofinal", "umg", "1234");
+
+            tblGestion.setDefaultRenderer(Object.class, new ClsFunciones().new ImgTabla());
+            modelo = new DefaultTableModel();
+            tblGestion.setModel(modelo);
+
+            filtro = (this.txtGestion.getText().equals("")) ? ";" : " WHERE perfil = '" + this.txtGestion.getText() + "' AND estatus = 1;";
+
+            query = "SELECT tipo "
+                    + "FROM proyectofinal.tipo_gestion" + filtro;
+
+            //System.out.println("query = " + query);
+            rs = cn.select(query);
+
+            ResultSetMetaData rsMd = rs.getMetaData();
+            int cantidadCol = rsMd.getColumnCount();
+
+            modelo.addColumn("Tipo");
+
+            objeto = new Object[cantidadCol];
+
+            while (rs.next()) {
+                objeto[0] = rs.getString("tipo");
+                modelo.addRow(objeto);
+            }
+
+        } catch (SQLException ex) {
+            Logger.getLogger(FrmReportes.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_jButton3ActionPerformed
+
+    private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jButton4ActionPerformed
+
+    private void btnBuscarUActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscarUActionPerformed
+
+        try {
+            cn.conexion("proyectofinal", "umg", "1234");
+
             /*CallableStatement cStmt = cn.con.prepareCall("{CALL sp_consultas(?, ?, ?, ?)}");
-            
+
             cStmt.setString(1, this.txtUsuario.getText());
             cStmt.setString(2, this.txtNombre.getText());
             cStmt.setString(3, this.txtFechaNac.getText());
             cStmt.setInt(4, 1);
-            
+
             cStmt.execute();
-            
+
             rs = cStmt.getResultSet();
-            
+
             while (rs.next()){
                 System.out.println("Consulta = " + rs.getString(string));
             }*/
-
-            DefaultTableModel modelo = new DefaultTableModel();
+            tblUsuarios.setDefaultRenderer(Object.class, new ClsFunciones().new ImgTabla());
+            modelo = new DefaultTableModel();
             tblUsuarios.setModel(modelo);
-            
+
+            filtro = (this.txtUsuario.getText().equals("")) ? ";" : " WHERE usuario = '" + this.txtUsuario.getText() + "';";
+
             query = "SELECT codigo,usuario,REPLACE(CONCAT_WS(' ', nombre1, nombre2, apellido1, apellido2), '  ', ' ') nombre,fecha_nacimiento,foto "
-                    + "FROM proyectofinal.usuario WHERE usuario = '" + this.txtUsuario.getText() + "';";
-            
+            + "FROM proyectofinal.usuario" + filtro;
+
+            System.out.println("query1 = " + query);
+
             rs = cn.select(query);
-            
+
             ResultSetMetaData rsMd = rs.getMetaData();
             int cantidadCol = rsMd.getColumnCount();
-            
+
             modelo.addColumn("Codigo");
             modelo.addColumn("Usuario");
             modelo.addColumn("Nombre");
             modelo.addColumn("Fecha Nacimiento");
             modelo.addColumn("Foto");
-            
-            while(rs.next()){
+
+            /*while(rs.next()){
                 Object[] filas = new Object[cantidadCol];
-                
+
                 for (int i = 0; i < cantidadCol; i++) {
                     filas[i] = rs.getObject(i + 1);
-                    
+
                 }
                 modelo.addRow(filas);
+            }*/
+            Object objUsuarios[] = new Object[cantidadCol];
+
+            while (rs.next()) {
+                objUsuarios[0] = rs.getString("codigo");
+                objUsuarios[1] = rs.getString("usuario");
+                objUsuarios[2] = rs.getString("nombre");
+                objUsuarios[3] = rs.getString("fecha_nacimiento");
+                foto = rs.getString("foto");
+                //System.out.println("foto = " + foto);
+
+                BufferedImage img = null;
+                try {
+                    img = ImageIO.read(new File(foto));
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+                Image dimg = img.getScaledInstance(100, 100, Image.SCALE_SMOOTH);
+
+                //objUsuarios[4] = new ImageIcon("./src/imagenes/Fotos/U 2540966540101.jpg");
+                objUsuarios[4] = new JLabel(new ImageIcon(dimg));
+                modelo.addRow(objUsuarios);
             }
-            
+
+            tblUsuarios.setRowHeight(100);
+
         } catch (SQLException e) {
             System.err.println(e.toString());;
         }
-    }//GEN-LAST:event_jButton1ActionPerformed
+    }//GEN-LAST:event_btnBuscarUActionPerformed
+
+    private void btnGenPDFActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGenPDFActionPerformed
+        String imagen = null;
+        clsPDF = new ClsPDF("Usuarios", 1, null);
+        String[] encabezado = {"Codigo", "Usuario", "Nombre", "Fecha Nacimiento", "Foto"};
+        clsPDF.setFoto(foto);
+        clsPDF.reportes(encabezado, this.tblUsuarios);
+    }//GEN-LAST:event_btnGenPDFActionPerformed
+
+    private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jButton6ActionPerformed
+
+    private void llenarTabla(JTable tabla, JTextField filtroTxt, String consulta, String filtroQ) {
+        try {
+            cn.conexion("proyectofinal", "umg", "1234");
+
+            tabla.setDefaultRenderer(Object.class, new ClsFunciones().new ImgTabla());
+            modelo = new DefaultTableModel();
+            tabla.setModel(modelo);
+
+            System.out.println("query = " + consulta + filtroQ);
+
+            rs = cn.select(consulta);
+
+            ResultSetMetaData rsMd = rs.getMetaData();
+            int cantidadCol = rsMd.getColumnCount();
+
+            modelo.addColumn("Perfil");
+            modelo.addColumn("Descripcion");
+
+            objeto = new Object[cantidadCol];
+
+            while (rs.next()) {
+                objeto[0] = rs.getString("perfil");
+                objeto[1] = rs.getString("descripcion");
+                modelo.addRow(objeto);
+            }
+
+        } catch (SQLException ex) {
+            Logger.getLogger(FrmReportes.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
 
     /**
      * @param args the command line arguments
@@ -282,20 +731,55 @@ public class FrmReportes extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
+    private javax.swing.JButton btnBuscarU;
+    private javax.swing.JButton btnGenPDF;
+    private javax.swing.JButton jButton2;
+    private javax.swing.JButton jButton3;
+    private javax.swing.JButton jButton4;
+    private javax.swing.JButton jButton6;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel10;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel6;
+    private javax.swing.JLabel jLabel7;
+    private javax.swing.JLabel jLabel8;
+    private javax.swing.JLabel jLabel9;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
-    private javax.swing.JPanel jPanel5;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JScrollPane jScrollPane3;
+    private javax.swing.JScrollPane jScrollPane4;
+    private javax.swing.JScrollPane jScrollPane5;
+    private javax.swing.JScrollPane jScrollPane6;
     private javax.swing.JTabbedPane jTabbedPane1;
+    private javax.swing.JPanel pnlGeneral;
+    private javax.swing.JPanel pnlGestion;
+    private javax.swing.JPanel pnlPerfil;
+    private javax.swing.JPanel pnlTicket;
+    private javax.swing.JPanel pnlUsr;
+    private javax.swing.JPanel pnlVisit;
+    private javax.swing.JTable tblGestion;
+    private javax.swing.JTable tblPerfil;
     private javax.swing.JTable tblUsuarios;
+    private javax.swing.JTable tblUsuarios1;
+    private javax.swing.JTable tblUsuarios2;
+    private javax.swing.JTable tblUsuarios3;
     private javax.swing.JTextField txtFechaNac;
+    private javax.swing.JTextField txtFechaNac1;
+    private javax.swing.JTextField txtGestion;
     private javax.swing.JTextField txtNombre;
+    private javax.swing.JTextField txtNombre1;
+    private javax.swing.JTextField txtNombre2;
+    private javax.swing.JTextField txtNombre3;
+    private javax.swing.JTextField txtPerfil;
     private javax.swing.JTextField txtUsuario;
+    private javax.swing.JTextField txtUsuario1;
+    private javax.swing.JTextField txtUsuario2;
     // End of variables declaration//GEN-END:variables
 }

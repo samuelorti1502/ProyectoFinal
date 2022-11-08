@@ -12,26 +12,28 @@ import javax.swing.JTextField;
 import javax.swing.text.JTextComponent;
 
 import com.google.zxing.BarcodeFormat;
-import com.google.zxing.BinaryBitmap;
 import com.google.zxing.DecodeHintType;
-import com.google.zxing.MultiFormatReader;
-import com.google.zxing.NotFoundException;
-import com.google.zxing.Result;
 import com.google.zxing.WriterException;
-import com.google.zxing.client.j2se.BufferedImageLuminanceSource;
 import com.google.zxing.client.j2se.MatrixToImageWriter;
 import com.google.zxing.common.BitMatrix;
-import com.google.zxing.common.HybridBinarizer;
 import com.google.zxing.qrcode.QRCodeWriter;
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.FileInputStream;
+import com.itextpdf.kernel.events.IEventHandler;
+import com.itextpdf.kernel.events.PdfDocumentEvent;
+import com.itextpdf.kernel.geom.PageSize;
+import com.itextpdf.kernel.pdf.PdfDocument;
+import com.itextpdf.kernel.pdf.PdfWriter;
+import com.itextpdf.layout.Document;
+import com.itextpdf.layout.element.Table;
+import com.itextpdf.layout.properties.UnitValue;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
 import java.sql.CallableStatement;
 
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.EnumMap;
 import java.util.EnumSet;
@@ -41,10 +43,12 @@ import java.util.Properties;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.imageio.ImageIO;
 import javax.mail.*;
 import javax.mail.internet.*;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.JTable;
+import javax.swing.table.DefaultTableCellRenderer;
 
 /**
  *
@@ -69,6 +73,8 @@ public class ClsFunciones {
 
     Map<String, String> inLineImages = new HashMap<String, String>();
     StringBuffer body;
+
+    ClsConnect cn = new ClsConnect();
 
     public void Clear(JPanel intFrame) {
 
@@ -127,7 +133,7 @@ public class ClsFunciones {
         System.out.println("fecha " + fecha);
 
         try {
-            ClsConnect cn = new ClsConnect();
+
             cn.conexion("proyectofinal", "umg", "1234");
 
             CallableStatement cStmt = cn.con.prepareCall("{CALL sp_ticket(?, ?, ?, ?)}");
@@ -231,13 +237,30 @@ public class ClsFunciones {
 
     public void leerQR() {
         //File codigoQR = new File("./src/imagenes/QR/2540966540101E.png");
-        
+
         String codigoQR = "./src/imagenes/QR/2540966540101E.png";
-        
+
         Map<DecodeHintType, Object> tmpHintsMap = new EnumMap<DecodeHintType, Object>(DecodeHintType.class);
         tmpHintsMap.put(DecodeHintType.TRY_HARDER, Boolean.TRUE);
         tmpHintsMap.put(DecodeHintType.POSSIBLE_FORMATS, EnumSet.allOf(BarcodeFormat.class));
         tmpHintsMap.put(DecodeHintType.PURE_BARCODE, Boolean.TRUE);
     }
 
+    public void imprimir(String reporte, String titulo) {
+        
+    }
+
+    public class ImgTabla extends DefaultTableCellRenderer {
+
+        @Override
+        public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+
+            if (value instanceof JLabel) {
+                JLabel lbl = (JLabel) value;
+                return lbl;
+            }
+
+            return super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+        }
+    }
 }
